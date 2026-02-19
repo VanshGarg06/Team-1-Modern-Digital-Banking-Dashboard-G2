@@ -1,0 +1,231 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Modern Digital Banking Design System - Dark Fintech Theme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    /* Core palette - Dark mode primary */
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 8%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 10%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Teal/Cyan primary - Trust, Finance */
+    --primary: 173 80% 40%;
+    --primary-foreground: 222 47% 6%;
+
+    /* Secondary surface */
+    --secondary: 222 40% 12%;
+    --secondary-foreground: 210 40% 98%;
+
+    /* Muted elements */
+    --muted: 222 35% 15%;
+    --muted-foreground: 215 20% 55%;
+
+    /* Accent - Warm glow */
+    --accent: 45 93% 58%;
+    --accent-foreground: 222 47% 6%;
+
+    /* Semantic colors */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 210 40% 98%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 47% 6%;
+
+    /* Borders and inputs */
+    --border: 222 30% 18%;
+    --input: 222 30% 18%;
+    --ring: 173 80% 40%;
+
+    --radius: 0.75rem;
+
+    /* Custom gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(173, 80%, 40%) 0%, hsl(173, 80%, 30%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(222, 47%, 10%) 0%, hsl(222, 47%, 6%) 100%);
+    --gradient-glow: radial-gradient(ellipse at 50% 0%, hsl(173, 80%, 40%, 0.15) 0%, transparent 50%);
+    --gradient-accent: linear-gradient(135deg, hsl(45, 93%, 58%) 0%, hsl(38, 92%, 50%) 100%);
+
+    /* Glass effect */
+    --glass-bg: hsl(222, 47%, 10%, 0.7);
+    --glass-border: hsl(222, 30%, 25%, 0.5);
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px -2px hsl(0, 0%, 0%, 0.3);
+    --shadow-md: 0 8px 24px -8px hsl(0, 0%, 0%, 0.4);
+    --shadow-lg: 0 16px 48px -12px hsl(0, 0%, 0%, 0.5);
+    --shadow-glow: 0 0 40px -10px hsl(173, 80%, 40%, 0.4);
+
+    /* Sidebar */
+    --sidebar-background: 222 47% 6%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 173 80% 40%;
+    --sidebar-primary-foreground: 222 47% 6%;
+    --sidebar-accent: 222 40% 12%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 222 30% 18%;
+    --sidebar-ring: 173 80% 40%;
+  }
+
+  .dark {
+    /* Same as root - dark mode is primary */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+}
+
+@layer components {
+  /* Glass morphism card */
+  .glass-card {
+    @apply relative overflow-hidden rounded-xl;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(173, 80%, 50%) 0%, hsl(173, 80%, 70%) 100%);
+  }
+
+  /* Glow effect */
+  .glow-effect {
+    position: relative;
+  }
+
+  .glow-effect::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: var(--gradient-primary);
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+    filter: blur(8px);
+  }
+
+  .glow-effect:hover::before {
+    opacity: 0.5;
+  }
+
+  /* Account card gradient backgrounds */
+  .account-card-checking {
+    background: linear-gradient(135deg, hsl(173, 80%, 35%) 0%, hsl(190, 80%, 25%) 100%);
+  }
+
+  .account-card-savings {
+    background: linear-gradient(135deg, hsl(142, 71%, 35%) 0%, hsl(160, 70%, 25%) 100%);
+  }
+
+  .account-card-credit {
+    background: linear-gradient(135deg, hsl(260, 60%, 45%) 0%, hsl(280, 60%, 35%) 100%);
+  }
+
+  .account-card-investment {
+    background: linear-gradient(135deg, hsl(45, 93%, 45%) 0%, hsl(38, 92%, 35%) 100%);
+  }
+
+  .account-card-loan {
+    background: linear-gradient(135deg, hsl(0, 72%, 45%) 0%, hsl(15, 70%, 35%) 100%);
+  }
+
+  /* Transaction row hover */
+  .transaction-row {
+    @apply transition-colors duration-200;
+  }
+
+  .transaction-row:hover {
+    background: hsl(222, 40%, 12%);
+  }
+
+  /* Stat card */
+  .stat-card {
+    @apply glass-card p-6;
+    background: var(--gradient-card);
+  }
+
+  /* Input focus glow */
+  .input-glow:focus {
+    box-shadow: 0 0 0 2px hsl(173, 80%, 40%, 0.3);
+  }
+
+  /* Navigation link */
+  .nav-link {
+    @apply relative px-4 py-2 rounded-lg transition-all duration-200;
+  }
+
+  .nav-link.active {
+    @apply bg-primary/10 text-primary;
+  }
+
+  .nav-link:hover:not(.active) {
+    @apply bg-muted;
+  }
+}
+
+@layer utilities {
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from { 
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to { 
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}

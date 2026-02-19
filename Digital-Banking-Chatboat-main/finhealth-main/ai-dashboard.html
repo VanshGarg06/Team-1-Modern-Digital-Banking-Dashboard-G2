@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Financial Intelligence</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>🧠 AI Financial Intelligence Dashboard</h1>
+
+<section class="card">
+  <h2>User Financial Input</h2>
+  <input id="income" placeholder="Monthly Income ₹" type="number">
+  <input id="expenses" placeholder="Monthly Expenses ₹" type="number">
+  <input id="savings" placeholder="Monthly Savings ₹" type="number">
+  <input id="emergency" placeholder="Emergency Fund ₹" type="number">
+
+  <button onclick="runAI()">Run AI Analysis</button>
+</section>
+
+<section class="card">
+  <h2>AI Health Index</h2>
+  <div id="aiScore">--</div>
+  <p id="riskLevel"></p>
+  <p id="personality"></p>
+</section>
+
+<section class="card">
+  <h2>Explainable AI</h2>
+  <ul id="explanation"></ul>
+</section>
+
+<section class="card">
+  <h2>What-If Simulator</h2>
+  <input id="extraSave" placeholder="Extra Savings ₹" type="number">
+  <button onclick="simulate()">Simulate Future</button>
+  <p id="simulationResult"></p>
+</section>
+
+<script src="js/ai-engine.js"></script>
+<script src="js/ai-explainer.js"></script>
+<script src="js/ai-simulator.js"></script>
+<script src="js/ai-ui.js"></script>
+
+</body>
+</html>

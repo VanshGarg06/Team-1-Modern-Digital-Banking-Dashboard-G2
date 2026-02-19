@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Insurance Calculator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .calc-wrapper { display: flex; gap: 20px; }
+    .calc-card-left, .calc-card-right { padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+    .calc-group { margin-bottom: 15px; }
+    .calc-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+    .calc-group input[type="range"] { width: 100%; }
+    .calc-group input[type="number"] { width: 120px; margin-top: 5px; }
+    .calc-result div { margin: 5px 0; display: flex; justify-content: space-between; font-weight: bold; }
+    .chart-box { margin-bottom: 30px; }
+    button { padding: 10px 15px; background-color: #2f83c3; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<h2>🛡️ Insurance Coverage Calculator</h2>
+
+<div class="calc-wrapper">
+  <div class="calc-card-left">
+    <div class="calc-group">
+      <label>Annual Expenses (₹)</label>
+      <input id="expenseRange" type="range" min="100000" max="5000000" value="600000">
+      <input id="expenseNum" type="number" value="600000">
+    </div>
+
+    <div class="calc-group">
+      <label>Existing Liabilities/Loans (₹)</label>
+      <input id="loanRange" type="range" min="0" max="20000000" value="2000000">
+      <input id="loanNum" type="number" value="2000000">
+    </div>
+
+    <div class="calc-group">
+      <label>Years to provide cover for</label>
+      <input id="yearsRange" type="range" min="5" max="30" value="20">
+      <input id="yearsNum" type="number" value="20">
+    </div>
+
+    <div class="calc-result">
+      <div><span>Total Need</span><span id="totalNeed">₹0</span></div>
+      <div><span>Recommended Cover</span><span id="recCover">₹0</span></div>
+    </div>
+    <button id="downloadPDF">Download PDF</button>
+  </div>
+
+  <div class="calc-card-right">
+    <div class="chart-box">
+      <h4>Coverage Breakdown</h4>
+      <canvas id="pieChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+  const expenseRange = document.getElementById("expenseRange");
+  const expenseNum = document.getElementById("expenseNum");
+  const loanRange = document.getElementById("loanRange");
+  const loanNum = document.getElementById("loanNum");
+  const yearsRange = document.getElementById("yearsRange");
+  const yearsNum = document.getElementById("yearsNum");
+
+  function sync(r, n) {
+    r.addEventListener("input", () => { n.value = r.value; update(); });
+    n.addEventListener("input", () => { r.value = n.value; update(); });
+  }
+  sync(expenseRange, expenseNum); sync(loanRange, loanNum); sync(yearsRange, yearsNum);
+
+  const pieChart = new Chart(document.getElementById("pieChart"), {
+    type: 'pie',
+    data: { labels: ["Expenses Cover", "Liabilities"], datasets: [{ data: [0, 0], backgroundColor: ["#2f83c3", "#1e2a6a"] }] }
+  });
+
+  function update() {
+    const exp = parseFloat(expenseNum.value);
+    const loans = parseFloat(loanNum.value);
+    const yrs = parseFloat(yearsNum.value);
+    
+    const expCover = exp * yrs;
+    const total = expCover + loans;
+
+    document.getElementById("totalNeed").innerText = "₹" + total.toLocaleString();
+    document.getElementById("recCover").innerText = "₹" + total.toLocaleString();
+
+    pieChart.data.datasets[0].data = [expCover, loans];
+    pieChart.update();
+  }
+  update();
+
+  document.getElementById("downloadPDF").addEventListener("click", () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.text("Insurance Coverage Report", 10, 10);
+    doc.text(`Annual Expenses: ${expenseNum.value}`, 10, 20);
+    doc.text(`Total Liabilities: ${loanNum.value}`, 10, 30);
+    doc.text(`Years Covered: ${yearsNum.value}`, 10, 40);
+    doc.text(`Total Recommended Cover: ${document.getElementById("recCover").innerText}`, 10, 50);
+    doc.save("insurance_plan.pdf");
+  });
+</script>
+</body>
+</html>

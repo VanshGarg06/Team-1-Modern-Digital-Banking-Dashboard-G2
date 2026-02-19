@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced Lumpsum Calculator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f7f6; }
+    h2 { color: #1e2a6a; }
+    .calc-wrapper { display: flex; gap: 20px; flex-wrap: wrap; }
+    .calc-card-left, .calc-card-right { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); flex: 1; min-width: 350px; }
+    .calc-group { margin-bottom: 20px; }
+    .calc-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+    .calc-group input[type="range"] { width: 100%; cursor: pointer; }
+    .calc-group input[type="number"] { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px; margin-top: 5px; }
+    .calc-result { background: #eef5ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    .calc-result div { margin: 10px 0; display: flex; justify-content: space-between; font-size: 1.1em; }
+    .calc-result span:last-child { color: #2f83c3; font-weight: bold; }
+    .chart-box { margin-top: 20px; }
+    button { width: 100%; padding: 12px; background-color: #2f83c3; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+    button:hover { background-color: #1e2a6a; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 8px; overflow: hidden; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+    th { background: #2f83c3; color: white; }
+  </style>
+</head>
+<body>
+
+<h2>💰 Lumpsum Wealth Predictor</h2>
+
+<div class="calc-wrapper">
+  <div class="calc-card-left">
+    <div class="calc-group">
+      <label>Total Investment (₹)</label>
+      <input id="invRange" type="range" min="5000" max="10000000" step="5000" value="100000">
+      <input id="invNum" type="number" value="100000">
+    </div>
+    <div class="calc-group">
+      <label>Expected Return Rate (p.a %)</label>
+      <input id="rateRange" type="range" min="1" max="30" step="0.5" value="12">
+      <input id="rateNum" type="number" value="12">
+    </div>
+    <div class="calc-group">
+      <label>Time Period (Years)</label>
+      <input id="timeRange" type="range" min="1" max="30" value="10">
+      <input id="timeNum" type="number" value="10">
+    </div>
+
+    <div class="calc-result">
+      <div><span>Invested Amount</span><span id="resInvested">₹0</span></div>
+      <div><span>Est. Returns</span><span id="resReturns">₹0</span></div>
+      <div><span>Total Value</span><span id="resTotal">₹0</span></div>
+    </div>
+    <button id="downloadPDF">Export Report (PDF)</button>
+  </div>
+
+  <div class="calc-card-right">
+    <div class="chart-box">
+      <canvas id="pieChart" height="200"></canvas>
+    </div>
+    <div class="chart-box">
+      <canvas id="lineChart" height="200"></canvas>
+    </div>
+  </div>
+</div>
+
+<div id="table-container">
+    <table>
+        <thead><tr><th>Year</th><th>Investment Value</th><th>Total Interest</th></tr></thead>
+        <tbody id="growthTable"></tbody>
+    </table>
+</div>
+
+<script>
+  const invR = document.getElementById("invRange"), invN = document.getElementById("invNum");
+  const rateR = document.getElementById("rateRange"), rateN = document.getElementById("rateNum");
+  const timeR = document.getElementById("timeRange"), timeN = document.getElementById("timeNum");
+
+  function sync(r, n) {
+    r.addEventListener("input", () => { n.value = r.value; update(); });
+    n.addEventListener("input", () => { r.value = n.value; update(); });
+  }
+  sync(invR, invN); sync(rateR, rateN); sync(timeR, timeN);
+
+  const pieCtx = document.getElementById("pieChart").getContext("2d");
+  const lineCtx = document.getElementById("lineChart").getContext("2d");
+
+  let pieChart = new Chart(pieCtx, {
+    type: 'doughnut',
+    data: { labels: ["Principal", "Returns"], datasets: [{ backgroundColor: ["#1e2a6a", "#2f83c3"] }] }
+  });
+
+  let lineChart = new Chart(lineCtx, {
+    type: 'line',
+    data: { labels: [], datasets: [{ label: "Growth Over Time", borderColor: "#2f83c3", data: [], fill: true, backgroundColor: 'rgba(47, 131, 195, 0.1)' }] }
+  });
+
+  function update() {
+    const P = parseFloat(invN.value);
+    const r = parseFloat(rateN.value) / 100;
+    const n = parseInt(timeN.value);
+
+    const totalValue = P * Math.pow((1 + r), n);
+    const returns = totalValue - P;
+
+    document.getElementById("resInvested").innerText = "₹" + P.toLocaleString();
+    document.getElementById("resReturns").innerText = "₹" + Math.round(returns).toLocaleString();
+    document.getElementById("resTotal").innerText = "₹" + Math.round(totalValue).toLocaleString();
+
+    pieChart.data.datasets[0].data = [P, returns];
+    pieChart.update();
+
+    // Year-wise table and line chart
+    let tableHtml = "";
+    let labels = [];
+    let dataPoints = [];
+    for (let i = 1; i <= n; i++) {
+        let val = P * Math.pow((1 + r), i);
+        labels.push("Year " + i);
+        dataPoints.push(Math.round(val));
+        tableHtml += `<tr><td>${i}</td><td>₹${Math.round(val).toLocaleString()}</td><td>₹${Math.round(val - P).toLocaleString()}</td></tr>`;
+    }
+    document.getElementById("growthTable").innerHTML = tableHtml;
+    lineChart.data.labels = labels;
+    lineChart.data.datasets[0].data = dataPoints;
+    lineChart.update();
+  }
+
+  update();
+
+  document.getElementById("downloadPDF").addEventListener("click", () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("Lumpsum Investment Report", 10, 20);
+    doc.setFontSize(12);
+    doc.text(`Principal: ₹${invN.value}`, 10, 40);
+    doc.text(`Returns: ${rateN.value}% for ${timeN.value} years`, 10, 50);
+    doc.text(`Maturity Amount: ${document.getElementById("resTotal").innerText}`, 10, 60);
+    doc.save("lumpsum_plan.pdf");
+  });
+</script>
+</body>
+</html>

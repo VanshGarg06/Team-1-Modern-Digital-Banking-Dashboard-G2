@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Retirement Goal Calculator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; margin: 20px; background: #f0f2f5; }
+    .calc-wrapper { display: flex; gap: 20px; flex-wrap: wrap; }
+    .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); flex: 1; }
+    .calc-group { margin-bottom: 15px; }
+    label { font-weight: bold; display: block; margin-bottom: 5px; }
+    input { width: 100%; }
+    .highlight-box { background: #2f83c3; color: white; padding: 20px; border-radius: 10px; margin-top: 20px; text-align: center; }
+    .highlight-box h3 { margin: 0; font-size: 2em; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+    .stat-item { background: #f8f9fa; padding: 10px; border-radius: 5px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<h2>🏖️ Professional Retirement Planner</h2>
+
+<div class="calc-wrapper">
+  <div class="card">
+    <div class="calc-group">
+      <label>Current Age</label>
+      <input id="age" type="number" value="30">
+    </div>
+    <div class="calc-group">
+      <label>Planned Retirement Age</label>
+      <input id="retireAge" type="number" value="60">
+    </div>
+    <div class="calc-group">
+      <label>Current Monthly Expenses (₹)</label>
+      <input id="monthlyExp" type="number" value="50000">
+    </div>
+    <div class="calc-group">
+      <label>Expected Inflation Rate (% p.a)</label>
+      <input id="inflation" type="number" value="6">
+    </div>
+    <div class="calc-group">
+      <label>Post-Retirement Return Rate (%)</label>
+      <input id="postRetRate" type="number" value="8">
+    </div>
+
+    <div class="highlight-box">
+        <p>Target Retirement Corpus</p>
+        <h3 id="targetCorpus">₹0</h3>
+    </div>
+  </div>
+
+  <div class="card">
+    <canvas id="growthChart"></canvas>
+    <div class="stat-grid">
+        <div class="stat-item">Monthly Exp at Retirement: <br><span id="futureExp" style="color:#2f83c3">₹0</span></div>
+        <div class="stat-item">Years to Save: <br><span id="yrsToSave" style="color:#2f83c3">0</span></div>
+    </div>
+    <p style="margin-top:20px; font-size:0.9em; color:#666;">*Calculated based on a 25-year post-retirement lifespan.</p>
+  </div>
+</div>
+
+<script>
+    const inputs = ['age', 'retireAge', 'monthlyExp', 'inflation', 'postRetRate'];
+    inputs.forEach(id => document.getElementById(id).addEventListener('input', calculate));
+
+    const ctx = document.getElementById('growthChart').getContext('2d');
+    let chart = new Chart(ctx, {
+        type: 'bar',
+        data: { labels: ['Today', 'At Retirement'], datasets: [{ label: 'Monthly Expense', data: [0, 0], backgroundColor: ['#1e2a6a', '#2f83c3'] }] }
+    });
+
+    function calculate() {
+        const age = parseInt(document.getElementById('age').value);
+        const retAge = parseInt(document.getElementById('retireAge').value);
+        const curExp = parseFloat(document.getElementById('monthlyExp').value);
+        const infl = parseFloat(document.getElementById('inflation').value) / 100;
+        const postRate = parseFloat(document.getElementById('postRetRate').value) / 100;
+
+        const yrsToRetire = retAge - age;
+        
+        // 1. Future Value of Monthly Expense at Retirement
+        const futureMonthlyExp = curExp * Math.pow((1 + infl), yrsToRetire);
+        
+        // 2. Corpus Calculation (SWP logic for 25 years post retirement)
+        // Formula: Corpus = P * (1 - (1+r)^-n) / r
+        const n_months = 25 * 12;
+        const r_monthly = postRate / 12;
+        const corpusNeeded = futureMonthlyExp * ((1 - Math.pow(1 + r_monthly, -n_months)) / r_monthly);
+
+        document.getElementById('targetCorpus').innerText = "₹" + Math.round(corpusNeeded).toLocaleString();
+        document.getElementById('futureExp').innerText = "₹" + Math.round(futureMonthlyExp).toLocaleString();
+        document.getElementById('yrsToSave').innerText = yrsToRetire;
+
+        chart.data.datasets[0].data = [curExp, Math.round(futureMonthlyExp)];
+        chart.update();
+    }
+
+    calculate();
+</script>
+</body>
+</html>

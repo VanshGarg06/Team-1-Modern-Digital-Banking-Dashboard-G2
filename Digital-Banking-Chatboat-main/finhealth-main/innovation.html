@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Money Health Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <h1>💡 Money Health & Smart Insights</h1>
+
+  <!-- INPUT SECTION -->
+  <section class="card">
+    <h2>Enter Monthly Details</h2>
+
+    <input type="number" id="income" placeholder="Monthly Income (₹)">
+    <input type="number" id="expenses" placeholder="Total Expenses (₹)">
+    <input type="number" id="savings" placeholder="Savings (₹)">
+
+    <button onclick="calculateHealth()">Analyze</button>
+  </section>
+
+  <!-- SCORE -->
+  <section class="card">
+    <h2>Money Health Score</h2>
+    <div id="scoreCircle">--</div>
+    <p id="scoreText"></p>
+  </section>
+
+  <!-- INSIGHTS -->
+  <section class="card">
+    <h2>Smart Insights</h2>
+    <ul id="insights"></ul>
+  </section>
+
+  <!-- EXPLAIN PANEL -->
+  <section class="card">
+    <h2>Explain My Spending</h2>
+    <p id="explain"></p>
+  </section>
+
+<script src="js/innovation.js"></script>
+</body>
+</html>

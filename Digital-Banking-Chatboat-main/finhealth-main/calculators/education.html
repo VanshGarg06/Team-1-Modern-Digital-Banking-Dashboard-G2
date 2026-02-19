@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Education Loan Calculator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .calc-wrapper { display: flex; gap: 20px; }
+    .calc-card-left, .calc-card-right { padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+    .calc-group { margin-bottom: 15px; }
+    .calc-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+    .calc-group input[type="range"] { width: 100%; }
+    .calc-group input[type="number"] { width: 120px; margin-top: 5px; }
+    .calc-result div { margin: 5px 0; display: flex; justify-content: space-between; font-weight: bold; }
+    .chart-box { margin-bottom: 30px; }
+    button { padding: 10px 15px; background-color: #2f83c3; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<h2>🎓 Education Loan Calculator</h2>
+
+<div class="calc-wrapper">
+
+  <!-- LEFT INPUT PANEL -->
+  <div class="calc-card-left">
+
+    <div class="calc-group">
+      <label>Course Fee (₹)</label>
+      <input id="courseFeeRange" type="range" min="50000" max="5000000" value="500000">
+      <input id="courseFeeNum" type="number" min="50000" max="5000000" value="500000">
+    </div>
+
+    <div class="calc-group">
+      <label>Down Payment (₹)</label>
+      <input id="downPaymentRange" type="range" min="0" max="500000" value="100000">
+      <input id="downPaymentNum" type="number" min="0" max="500000" value="100000">
+    </div>
+
+    <div class="calc-group">
+      <label>Loan Tenure (Years)</label>
+      <input id="tenureRange" type="range" min="1" max="10" value="5">
+      <input id="tenureNum" type="number" min="1" max="10" value="5">
+    </div>
+
+    <div class="calc-group">
+      <label>Interest Rate (%)</label>
+      <input id="interestRange" type="range" min="4" max="15" value="10">
+      <input id="interestNum" type="number" min="4" max="15" value="10">
+    </div>
+
+    <div class="calc-result">
+      <div><span>Loan Amount</span><span id="loanAmount">₹400,000</span></div>
+      <div><span>Monthly EMI</span><span id="emi">₹8,487</span></div>
+      <div><span>Total Interest</span><span id="totalInterest">₹100,000</span></div>
+      <div><span>Total Payment</span><span id="totalPayment">₹500,000</span></div>
+    </div>
+
+    <button id="downloadPDF">Download PDF</button>
+
+  </div>
+
+  <!-- RIGHT CHART PANEL -->
+  <div class="calc-card-right">
+    <div class="chart-box">
+      <h4>Principal vs Interest - Pie Chart</h4>
+      <canvas id="pieChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h4>EMI Breakdown Over Months</h4>
+      <canvas id="barChart"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Elements
+  const courseFeeRange = document.getElementById("courseFeeRange");
+  const courseFeeNum = document.getElementById("courseFeeNum");
+  const downPaymentRange = document.getElementById("downPaymentRange");
+  const downPaymentNum = document.getElementById("downPaymentNum");
+  const tenureRange = document.getElementById("tenureRange");
+  const tenureNum = document.getElementById("tenureNum");
+  const interestRange = document.getElementById("interestRange");
+  const interestNum = document.getElementById("interestNum");
+
+  const loanAmountDisplay = document.getElementById("loanAmount");
+  const emiDisplay = document.getElementById("emi");
+  const totalInterestDisplay = document.getElementById("totalInterest");
+  const totalPaymentDisplay = document.getElementById("totalPayment");
+
+  function syncInputs(rangeInput, numInput) {
+    rangeInput.addEventListener("input", () => { numInput.value = rangeInput.value; updateCalculator(); });
+    numInput.addEventListener("input", () => { rangeInput.value = numInput.value; updateCalculator(); });
+  }
+
+  syncInputs(courseFeeRange, courseFeeNum);
+  syncInputs(downPaymentRange, downPaymentNum);
+  syncInputs(tenureRange, tenureNum);
+  syncInputs(interestRange, interestNum);
+
+  // Charts
+  const pieCtx = document.getElementById("pieChart").getContext("2d");
+  const barCtx = document.getElementById("barChart").getContext("2d");
+
+  let pieChart = new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+      labels: ["Principal", "Interest"],
+      datasets: [{ data: [400000, 100000], backgroundColor: ["#2f83c3", "#1e2a6a"] }]
+    }
+  });
+
+  let barChart = new Chart(barCtx, {
+    type: 'bar',
+    data: { labels: [], datasets: [{ label: "EMI Breakdown", data: [], backgroundColor: "#2f83c3" }] },
+    options: { scales: { y: { beginAtZero: true } } }
+  });
+
+  function calculateEMI(P, r, n) {
+    const monthlyRate = r / 12 / 100;
+    const months = n * 12;
+    return P * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+  }
+
+  function updateCalculator() {
+    const courseFee = parseFloat(courseFeeNum.value);
+    const downPayment = parseFloat(downPaymentNum.value);
+    const tenure = parseFloat(tenureNum.value);
+    const interest = parseFloat(interestNum.value);
+
+    const loanAmount = courseFee - downPayment;
+    const emi = calculateEMI(loanAmount, interest, tenure);
+    const totalPayment = emi * tenure * 12;
+    const totalInterest = totalPayment - loanAmount;
+
+    loanAmountDisplay.textContent = "₹" + loanAmount.toLocaleString();
+    emiDisplay.textContent = "₹" + Math.round(emi).toLocaleString();
+    totalInterestDisplay.textContent = "₹" + Math.round(totalInterest).toLocaleString();
+    totalPaymentDisplay.textContent = "₹" + Math.round(totalPayment).toLocaleString();
+
+    // Update Pie Chart
+    pieChart.data.datasets[0].data = [loanAmount, totalInterest];
+    pieChart.update();
+
+    // Update Bar Chart
+    const months = tenure * 12;
+    let barData = [];
+    let remaining = loanAmount;
+    const monthlyRate = interest / 12 / 100;
+    for (let m = 1; m <= months; m++) {
+      const interestPart = remaining * monthlyRate;
+      const principalPart = emi - interestPart;
+      remaining -= principalPart;
+      barData.push(Math.round(emi));
+    }
+    barChart.data.labels = Array.from({length: months}, (_, i) => (i+1).toString());
+    barChart.data.datasets[0].data = barData;
+    barChart.update();
+  }
+
+  updateCalculator();
+
+  // PDF Download
+  document.getElementById("downloadPDF").addEventListener("click", () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.text("🎓 Education Loan Calculator", 10, 10);
+    doc.text(`Course Fee: ₹${parseFloat(courseFeeNum.value).toLocaleString()}`, 10, 20);
+    doc.text(`Down Payment: ₹${parseFloat(downPaymentNum.value).toLocaleString()}`, 10, 30);
+    doc.text(`Loan Amount: ${loanAmountDisplay.textContent}`, 10, 40);
+    doc.text(`Interest Rate: ${interestNum.value}%`, 10, 50);
+    doc.text(`Tenure: ${tenureNum.value} years`, 10, 60);
+    doc.text(`Monthly EMI: ${emiDisplay.textContent}`, 10, 70);
+    doc.text(`Total Interest: ${totalInterestDisplay.textContent}`, 10, 80);
+    doc.text(`Total Payment: ${totalPaymentDisplay.textContent}`, 10, 90);
+
+    doc.save("education_loan.pdf");
+  });
+</script>
+
+</body>
+</html>

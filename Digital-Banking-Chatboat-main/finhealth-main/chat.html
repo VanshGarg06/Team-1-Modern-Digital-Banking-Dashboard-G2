@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Banking Chat</title>
+
+<style>
+body{
+font-family:Segoe UI;
+background:#111;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.chat-box{
+width:420px;
+height:520px;
+background:#1e1e1e;
+border-radius:20px;
+display:flex;
+flex-direction:column;
+padding:20px;
+box-shadow:0 0 25px rgba(0,0,0,0.6);
+}
+
+.messages{
+flex:1;
+overflow-y:auto;
+margin-bottom:10px;
+font-size:14px;
+}
+
+.input-row{
+display:flex;
+gap:10px;
+}
+
+input{
+flex:1;
+padding:10px;
+border-radius:10px;
+border:none;
+outline:none;
+}
+
+button{
+padding:10px 14px;
+border-radius:10px;
+border:none;
+background:#00c6ff;
+color:white;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+background:#0094cc;
+}
+
+.user{color:#00c6ff;margin:6px 0;}
+.bot{color:#00ff88;margin:6px 0;}
+</style>
+</head>
+
+<body>
+
+<div class="chat-box">
+
+<h3>🏦 Bank AI Assistant</h3>
+
+<div class="messages" id="messages"></div>
+
+<div class="input-row">
+<input type="text" id="msg" placeholder="Ask about SIP, loan, EMI..." />
+<button onclick="sendMessage()">Send</button>
+</div>
+
+</div>
+
+<script>
+const input = document.getElementById("msg");
+const messages = document.getElementById("messages");
+
+input.addEventListener("keypress", function(e){
+    if(e.key === "Enter"){
+        sendMessage();
+    }
+});
+
+async function sendMessage(){
+    let text = input.value.trim();
+    if(!text) return;
+
+    messages.innerHTML += `<div class="user">You: ${text}</div>`;
+    input.value = "";
+
+    try {
+        let res = await fetch("/chat", {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({message:text})
+        });
+
+        let data = await res.json();
+
+        // ✅ allow clickable links from backend
+        messages.innerHTML += `<div class="bot">Bot: ${data.reply}</div>`;
+
+        // ✅ AUTO REDIRECT if backend sends calculator path
+        if(data.redirect){
+            setTimeout(()=>{
+                window.location.href = data.redirect;
+            }, 1200);
+        }
+
+    } catch(err){
+        messages.innerHTML += `<div class="bot">⚠️ Server not reachable</div>`;
+    }
+
+    messages.scrollTop = messages.scrollHeight;
+}
+</script>
+
+</body>
+</html>

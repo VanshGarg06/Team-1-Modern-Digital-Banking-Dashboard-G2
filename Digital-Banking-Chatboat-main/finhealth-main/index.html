@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FinHealth – Financial Calculators</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- Header -->
+<nav class="navbar">
+  <h1 class="logo">FinHealth</h1>
+</nav>
+<section class="card">
+  <h2>🧠 AI Financial Intelligence</h2>
+  <p>
+    Analyze your financial behavior using AI-based logic,
+    risk prediction, and explainable insights.
+  </p>
+
+  <a href="ai-dashboard.html" class="btn">
+    Launch AI Dashboard
+  </a>
+</section>
+
+<!-- Main Content -->
+<main class="content">
+
+  <section class="page-header">
+    <h2>Financial Calculators</h2>
+    <p>
+      <a href="innovation.html">💡 Money Health Dashboard</a>
+
+      Practical tools to plan investments, loans, taxes, and life goals.
+    </p>
+  </section>
+
+  <!-- Calculator Grid -->
+  <section class="calculator-grid">
+
+    <a href="calculators/sip.html" class="calc-card">
+      <h3>SIP Calculator</h3>
+      <p>Estimate returns from systematic investment plans</p>
+    </a>
+
+    <a href="calculators/lumpsum.html" class="calc-card">
+      <h3>Lumpsum Calculator</h3>
+      <p>Calculate future value of one-time investments</p>
+    </a>
+
+    <a href="calculators/retirement.html" class="calc-card">
+      <h3>Retirement Calculator</h3>
+      <p>Plan savings required for retirement</p>
+    </a>
+
+    <a href="calculators/insurance.html" class="calc-card">
+      <h3>Insurance Calculator</h3>
+      <p>Estimate required life insurance coverage</p>
+    </a>
+
+    <a href="calculators/tax.html" class="calc-card">
+      <h3>Tax Calculator</h3>
+      <p>Compute tax liability and potential savings</p>
+    </a>
+
+    <a href="calculators/home-loan.html" class="calc-card">
+      <h3>Home Loan Calculator</h3>
+      <p>Analyze EMI, tenure, and affordability</p>
+    </a>
+
+    <a href="calculators/car.html" class="calc-card">
+      <h3>Car Loan Calculator</h3>
+      <p>Plan car purchase and EMI structure</p>
+    </a>
+
+    <a href="calculators/education.html" class="calc-card">
+      <h3>Education Planning</h3>
+      <p>Estimate future education expenses</p>
+    </a>
+
+    <a href="calculators/marriage.html" class="calc-card">
+      <h3>Marriage Planning</h3>
+      <p>Plan wedding expenses and savings</p>
+    </a>
+
+  </section>
+
+</main>
+
+<h3>Bank AI Chatbot</h3>
+
+<div id="chatBox" style="border:1px solid #ccc;height:200px;overflow:auto;padding:10px"></div>
+
+<input id="chatInput" type="text" placeholder="Ask about loan, balance, EMI">
+<button onclick="sendChatMessage()">Send</button>
+
+<script src="js/chat-api.js"></script>
+
+<!-- Footer -->
+<footer>
+  <p>© 2026 FinHealth Systems</p>
+</footer>
+
+</body>
+</html>
+
+

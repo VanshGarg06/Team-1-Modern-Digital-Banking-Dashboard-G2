@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enterprise AI Banking</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background: linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#1c1c1c);
+background-size:400% 400%;
+animation: gradientBG 12s ease infinite;
+}
+
+@keyframes gradientBG{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+.container{
+width:380px;
+background:rgba(255,255,255,0.08);
+border-radius:25px;
+backdrop-filter:blur(18px);
+box-shadow:0 0 60px rgba(0,0,0,0.7);
+padding:40px;
+position:relative;
+overflow:hidden;
+}
+
+.form{
+display:none;
+animation: fade 0.5s ease;
+}
+
+@keyframes fade{
+from{opacity:0; transform:translateY(10px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+.form.active{
+display:block;
+}
+
+h2{
+color:white;
+text-align:center;
+margin-bottom:25px;
+}
+
+.input-group{
+position:relative;
+margin-bottom:18px;
+}
+
+.input-group input{
+width:100%;
+padding:14px 14px 14px 45px;
+border:none;
+border-radius:12px;
+background:rgba(255,255,255,0.25);   /* darker background */
+color:#ffffff;                      /* strong white text */
+font-size:15px;
+font-weight:500;
+outline:none;
+transition:0.3s;
+}
+
+.input-group input::placeholder{
+color:rgba(255,255,255,0.85);       /* brighter placeholder */
+font-weight:400;
+}
+
+.input-group input:focus{
+background:rgba(255,255,255,0.35);
+box-shadow:0 0 10px #00c6ff;
+}
+
+
+.input-group input:focus{
+background:rgba(255,255,255,0.25);
+box-shadow:0 0 8px #00c6ff;
+}
+
+.input-group span{
+position:absolute;
+left:12px;
+top:50%;
+transform:translateY(-50%);
+color:white;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:12px;
+background: linear-gradient(45deg,#00c6ff,#0072ff);
+color:white;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+margin-top:10px;
+}
+
+button:hover{
+transform:scale(1.05);
+box-shadow:0 0 15px #00c6ff;
+}
+
+.toggle{
+margin-top:18px;
+text-align:center;
+color:#ddd;
+font-size:14px;
+cursor:pointer;
+}
+
+.toggle span{
+color:#00c6ff;
+font-weight:600;
+}
+
+.error{
+color:#ff4d4d;
+font-size:13px;
+margin-top:10px;
+display:none;
+text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LOGIN FORM -->
+<div class="form active" id="loginForm">
+<h2>🔐 Login</h2>
+
+<div class="input-group">
+<span>👤</span>
+<input type="text" id="loginUser" placeholder="Username">
+</div>
+
+<div class="input-group">
+<span>🔒</span>
+<input type="password" id="loginPass" placeholder="Password">
+</div>
+
+<button onclick="login()">Login</button>
+
+<div class="error" id="loginError">Invalid Credentials</div>
+
+<div class="toggle">
+Don't have an account? <span onclick="showSignup()">Sign Up</span>
+</div>
+</div>
+
+<!-- SIGNUP FORM -->
+<div class="form" id="signupForm">
+<h2>📝 Sign Up</h2>
+
+<div class="input-group">
+<span>👤</span>
+<input type="text" id="signupUser" placeholder="Username">
+</div>
+
+<div class="input-group">
+<span>📧</span>
+<input type="email" id="signupEmail" placeholder="Email">
+</div>
+
+<div class="input-group">
+<span>🔒</span>
+<input type="password" id="signupPass" placeholder="Password">
+</div>
+
+<button onclick="signup()">Create Account</button>
+
+<div class="error" id="signupError">All fields required</div>
+
+<div class="toggle">
+Already have an account? <span onclick="showLogin()">Login</span>
+</div>
+</div>
+
+</div>
+
+<script>
+let savedUser = "admin";
+let savedPass = "admin123";
+
+function showSignup(){
+document.getElementById("loginForm").classList.remove("active");
+document.getElementById("signupForm").classList.add("active");
+}
+
+function showLogin(){
+document.getElementById("signupForm").classList.remove("active");
+document.getElementById("loginForm").classList.add("active");
+}
+
+function login(){
+let user=document.getElementById("loginUser").value;
+let pass=document.getElementById("loginPass").value;
+let error=document.getElementById("loginError");
+
+if(user===savedUser && pass===savedPass){
+window.location.href="chat.html";
+}else{
+error.style.display="block";
+}
+}
+
+function signup(){
+let user=document.getElementById("signupUser").value;
+let email=document.getElementById("signupEmail").value;
+let pass=document.getElementById("signupPass").value;
+let error=document.getElementById("signupError");
+
+if(user && email && pass){
+savedUser=user;
+savedPass=pass;
+alert("Account Created Successfully!");
+showLogin();
+}else{
+error.style.display="block";
+}
+}
+</script>
+
+</body>
+</html>

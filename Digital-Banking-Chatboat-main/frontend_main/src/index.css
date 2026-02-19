@@ -1,0 +1,348 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Glassmorphism Banking Theme - Monochrome */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root,
+  .dark {
+    /* Core backgrounds */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 98%;
+
+    /* Glass surfaces */
+    --card: 0 0% 100% / 0.05;
+    --card-foreground: 0 0% 98%;
+    --card-border: 0 0% 100% / 0.1;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    /* Primary - Soft white glow */
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 4%;
+
+    /* Secondary - Muted gray */
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 85%;
+
+    /* Muted surfaces */
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 55%;
+
+    /* Accent - Subtle highlight */
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 98%;
+
+    /* Destructive */
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Success */
+    --success: 142 70% 45%;
+    --success-foreground: 0 0% 98%;
+
+    /* Warning */
+    --warning: 45 90% 55%;
+    --warning-foreground: 0 0% 10%;
+
+    /* Borders and inputs */
+    --border: 0 0% 100% / 0.08;
+    --input: 0 0% 100% / 0.05;
+    --ring: 0 0% 100% / 0.3;
+
+    --radius: 1rem;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 6%;
+    --sidebar-foreground: 0 0% 85%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 0 0% 100% / 0.08;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 100% / 0.06;
+    --sidebar-ring: 0 0% 100% / 0.2;
+
+    /* Glass effects */
+    --glass-bg: 0 0% 100% / 0.03;
+    --glass-border: 0 0% 100% / 0.08;
+    --glass-hover: 0 0% 100% / 0.06;
+    --glass-blur: 20px;
+
+    /* Gradients */
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.08) 0%, hsl(0 0% 100% / 0.02) 100%);
+    --gradient-glow: radial-gradient(ellipse at center, hsl(0 0% 100% / 0.1) 0%, transparent 70%);
+
+    /* Shadows */
+    --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.3), inset 0 1px 0 hsl(0 0% 100% / 0.1);
+    --shadow-soft: 0 4px 24px hsl(0 0% 0% / 0.2);
+    --shadow-glow: 0 0 40px hsl(0 0% 100% / 0.05);
+
+    /* Chart colors - Monochrome palette */
+    --chart-1: 0 0% 95%;
+    --chart-2: 0 0% 75%;
+    --chart-3: 0 0% 55%;
+    --chart-4: 0 0% 35%;
+    --chart-5: 0 0% 20%;
+  }
+
+  .light {
+    /* Core backgrounds */
+    --background: 0 0% 97%;
+    --foreground: 0 0% 10%;
+
+    /* Glass surfaces */
+    --card: 0 0% 0% / 0.03;
+    --card-foreground: 0 0% 10%;
+    --card-border: 0 0% 0% / 0.08;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+
+    /* Primary */
+    --primary: 0 0% 12%;
+    --primary-foreground: 0 0% 98%;
+
+    /* Secondary */
+    --secondary: 0 0% 92%;
+    --secondary-foreground: 0 0% 25%;
+
+    /* Muted surfaces */
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 45%;
+
+    /* Accent */
+    --accent: 0 0% 90%;
+    --accent-foreground: 0 0% 10%;
+
+    /* Destructive */
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Success */
+    --success: 142 70% 40%;
+    --success-foreground: 0 0% 98%;
+
+    /* Warning */
+    --warning: 45 90% 50%;
+    --warning-foreground: 0 0% 10%;
+
+    /* Borders and inputs */
+    --border: 0 0% 0% / 0.1;
+    --input: 0 0% 0% / 0.05;
+    --ring: 0 0% 0% / 0.2;
+
+    --radius: 1rem;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 35%;
+    --sidebar-primary: 0 0% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 0 0% 0% / 0.05;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 0% / 0.08;
+    --sidebar-ring: 0 0% 0% / 0.15;
+
+    /* Glass effects */
+    --glass-bg: 0 0% 100% / 0.6;
+    --glass-border: 0 0% 0% / 0.08;
+    --glass-hover: 0 0% 100% / 0.8;
+    --glass-blur: 20px;
+
+    /* Gradients */
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.7) 0%, hsl(0 0% 100% / 0.4) 100%);
+    --gradient-glow: radial-gradient(ellipse at center, hsl(0 0% 0% / 0.05) 0%, transparent 70%);
+
+    /* Shadows */
+    --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.08), inset 0 1px 0 hsl(0 0% 100% / 0.5);
+    --shadow-soft: 0 4px 24px hsl(0 0% 0% / 0.06);
+    --shadow-glow: 0 0 40px hsl(0 0% 0% / 0.03);
+
+    /* Chart colors - Monochrome palette for light */
+    --chart-1: 0 0% 15%;
+    --chart-2: 0 0% 30%;
+    --chart-3: 0 0% 50%;
+    --chart-4: 0 0% 65%;
+    --chart-5: 0 0% 80%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply h-full;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased min-h-full;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  #root {
+    @apply min-h-screen;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  /* Glass Card */
+  .glass-card {
+    @apply relative overflow-hidden rounded-2xl;
+    background: var(--gradient-glass);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid hsl(var(--glass-border));
+    box-shadow: var(--shadow-glass);
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300;
+  }
+
+  .glass-card-hover:hover {
+    background: hsl(var(--glass-hover));
+    border-color: hsl(var(--glass-border));
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-2px);
+  }
+
+  /* Glass Input */
+  .glass-input {
+    @apply w-full px-4 py-3 rounded-xl text-foreground placeholder:text-muted-foreground;
+    background: hsl(var(--input));
+    backdrop-filter: blur(10px);
+    border: 1px solid hsl(var(--glass-border));
+    transition: all 0.2s ease;
+  }
+
+  .glass-input:focus {
+    outline: none;
+    background: hsl(var(--glass-hover));
+    border-color: hsl(var(--ring));
+    box-shadow: 0 0 20px hsl(var(--ring));
+  }
+
+  /* Glass Button */
+  .glass-button {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300;
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(10px);
+    border: 1px solid hsl(var(--glass-border));
+  }
+
+  .glass-button:hover {
+    background: hsl(var(--glass-hover));
+    border-color: hsl(var(--ring));
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .glass-button-primary {
+    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border: none;
+  }
+
+  .glass-button-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* Stat number animation */
+  .stat-value {
+    @apply text-4xl font-bold tracking-tight;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    color: hsl(var(--foreground));
+  }
+
+  /* Sidebar active state */
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground transition-all duration-200;
+  }
+
+  .sidebar-link:hover {
+    @apply bg-sidebar-accent text-sidebar-foreground;
+  }
+
+  .sidebar-link.active {
+    @apply bg-sidebar-accent text-sidebar-primary;
+    box-shadow: inset 0 0 20px hsl(0 0% 100% / 0.05);
+  }
+
+  /* Health score gauge */
+  .health-gauge {
+    @apply relative;
+  }
+
+  .health-gauge-circle {
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease-out;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground));
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--foreground));
+  }
+
+  /* Chart tooltip */
+  .recharts-tooltip-wrapper {
+    outline: none !important;
+  }
+
+  .custom-tooltip {
+    @apply glass-card p-3;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    color: hsl(var(--foreground));
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    0% { box-shadow: 0 0 20px hsl(0 0% 100% / 0.05); }
+    100% { box-shadow: 0 0 40px hsl(0 0% 100% / 0.1); }
+  }
+}

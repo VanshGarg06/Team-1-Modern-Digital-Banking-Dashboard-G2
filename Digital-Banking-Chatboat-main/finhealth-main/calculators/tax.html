@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Income Tax Calculator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .calc-wrapper { display: flex; gap: 20px; }
+    .calc-card-left, .calc-card-right { padding: 20px; border: 1px solid #ccc; border-radius: 10px; width: 50%; }
+    .calc-group { margin-bottom: 15px; }
+    .calc-result div { margin: 5px 0; display: flex; justify-content: space-between; font-weight: bold; }
+    button { padding: 10px 15px; background-color: #2f83c3; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<h2>💸 Income Tax Calculator (New Regime)</h2>
+
+<div class="calc-wrapper">
+  <div class="calc-card-left">
+    <div class="calc-group">
+      <label>Annual Income (₹)</label>
+      <input id="incomeRange" type="range" min="300000" max="5000000" step="50000" value="1200000">
+      <input id="incomeNum" type="number" value="1200000">
+    </div>
+    <div class="calc-result">
+      <div><span>Net Taxable Income</span><span id="taxable">₹0</span></div>
+      <div><span>Total Tax Payable</span><span id="taxPayable">₹0</span></div>
+      <div><span>Take Home (Annual)</span><span id="takeHome">₹0</span></div>
+    </div>
+  </div>
+  <div class="calc-card-right">
+    <canvas id="pieChart"></canvas>
+  </div>
+</div>
+
+<script>
+  const incR = document.getElementById("incomeRange"), incN = document.getElementById("incomeNum");
+  incR.addEventListener("input", () => { incN.value = incR.value; update(); });
+  incN.addEventListener("input", () => { incR.value = incN.value; update(); });
+
+  const pieChart = new Chart(document.getElementById("pieChart"), {
+    type: 'pie',
+    data: { labels: ["Take Home", "Tax"], datasets: [{ data: [0, 0], backgroundColor: ["#2f83c3", "#ff4d4d"] }] }
+  });
+
+  function update() {
+    const income = parseFloat(incN.value);
+    let tax = 0;
+    // Standard Slab Logic (Simplified)
+    if(income <= 300000) tax = 0;
+    else if(income <= 600000) tax = (income - 300000) * 0.05;
+    else if(income <= 900000) tax = 15000 + (income - 600000) * 0.10;
+    else if(income <= 1200000) tax = 45000 + (income - 900000) * 0.15;
+    else tax = 90000 + (income - 1200000) * 0.20;
+
+    document.getElementById("taxable").innerText = "₹" + income.toLocaleString();
+    document.getElementById("taxPayable").innerText = "₹" + tax.toLocaleString();
+    document.getElementById("takeHome").innerText = "₹" + (income - tax).toLocaleString();
+
+    pieChart.data.datasets[0].data = [income - tax, tax];
+    pieChart.update();
+  }
+  update();
+</script>
+</body>
+</html>

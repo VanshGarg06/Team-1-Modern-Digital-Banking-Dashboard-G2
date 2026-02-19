@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Marriage Planning Calculator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .calc-wrapper { display: flex; gap: 20px; }
+    .calc-card-left, .calc-card-right { padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+    .calc-group { margin-bottom: 15px; }
+    .calc-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+    .calc-group input[type="range"] { width: 100%; }
+    .calc-group input[type="number"] { width: 100px; margin-top: 5px; }
+    .calc-result div { margin: 5px 0; display: flex; justify-content: space-between; font-weight: bold; }
+    .chart-box { margin-bottom: 30px; }
+    button { padding: 10px 15px; background-color: #2f83c3; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+
+<body>
+
+<div class="calc-header">
+  💍 Marriage Planning Calculator
+</div>
+
+<section class="calc-wrapper">
+
+  <!-- LEFT INPUT PANEL -->
+  <div class="calc-card-left">
+
+    <div class="calc-group">
+      <label>Current Age</label>
+      <input id="currentAgeRange" type="range" min="10" max="40" value="10">
+      <input id="currentAgeNum" type="number" min="10" max="40" value="10">
+    </div>
+
+    <div class="calc-group">
+      <label>Age at Start of Marriage</label>
+      <input id="marriageAgeRange" type="range" min="18" max="40" value="18">
+      <input id="marriageAgeNum" type="number" min="18" max="40" value="18">
+    </div>
+
+    <div class="calc-group">
+      <label>Current Marriage Expenses (₹)</label>
+      <input id="currentExpenseRange" type="range" min="100000" max="2000000" value="500000">
+      <input id="currentExpenseNum" type="number" min="100000" max="2000000" value="500000">
+    </div>
+
+    <div class="calc-group">
+      <label>Rate of Return (%)</label>
+      <input id="rateReturnRange" type="range" min="4" max="15" value="7">
+      <input id="rateReturnNum" type="number" min="4" max="15" value="7">
+    </div>
+
+    <div class="calc-group">
+      <label>Inflation Rate (%)</label>
+      <input id="inflationRange" type="range" min="3" max="10" value="5">
+      <input id="inflationNum" type="number" min="3" max="10" value="5">
+    </div>
+
+    <div class="calc-result">
+      <div><span>Current Expenses</span><span id="currentExpDisplay">₹500,000</span></div>
+      <div><span>Future Expenses</span><span id="futureExpDisplay">₹738,728</span></div>
+      <div><span>Planning via Lumpsum</span><span id="lumpsumDisplay">₹429,946</span></div>
+      <div><span>Planning via SIP</span><span id="sipDisplay">₹582</span></div>
+    </div>
+
+    <button id="downloadPDF">Download PDF</button>
+
+  </div>
+
+  <!-- RIGHT CHART PANEL -->
+  <div class="calc-card-right">
+
+    <div class="chart-box">
+      <h4>Marriage Planning Projection - Pie Chart</h4>
+      <canvas id="pieChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h4>Marriage Plan Projected Value</h4>
+      <canvas id="barChart"></canvas>
+    </div>
+
+  </div>
+
+</section>
+
+<script>
+  // Get all elements
+  const currentAgeRange = document.getElementById("currentAgeRange");
+  const currentAgeNum = document.getElementById("currentAgeNum");
+  const marriageAgeRange = document.getElementById("marriageAgeRange");
+  const marriageAgeNum = document.getElementById("marriageAgeNum");
+  const currentExpenseRange = document.getElementById("currentExpenseRange");
+  const currentExpenseNum = document.getElementById("currentExpenseNum");
+  const rateReturnRange = document.getElementById("rateReturnRange");
+  const rateReturnNum = document.getElementById("rateReturnNum");
+  const inflationRange = document.getElementById("inflationRange");
+  const inflationNum = document.getElementById("inflationNum");
+
+  const currentExpDisplay = document.getElementById("currentExpDisplay");
+  const futureExpDisplay = document.getElementById("futureExpDisplay");
+  const lumpsumDisplay = document.getElementById("lumpsumDisplay");
+  const sipDisplay = document.getElementById("sipDisplay");
+
+  function syncInputs(rangeInput, numInput) {
+    rangeInput.addEventListener("input", () => {
+      numInput.value = rangeInput.value;
+      updateCalculator();
+    });
+    numInput.addEventListener("input", () => {
+      rangeInput.value = numInput.value;
+      updateCalculator();
+    });
+  }
+
+  // Sync all inputs
+  syncInputs(currentAgeRange, currentAgeNum);
+  syncInputs(marriageAgeRange, marriageAgeNum);
+  syncInputs(currentExpenseRange, currentExpenseNum);
+  syncInputs(rateReturnRange, rateReturnNum);
+  syncInputs(inflationRange, inflationNum);
+
+  // Charts
+  const pieCtx = document.getElementById("pieChart").getContext("2d");
+  const barCtx = document.getElementById("barChart").getContext("2d");
+
+  let pieChart = new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+      labels: ["Current Expenses", "Future Expenses"],
+      datasets: [{
+        data: [500000, 738728],
+        backgroundColor: ["#2f83c3", "#1e2a6a"]
+      }]
+    }
+  });
+
+  let barChart = new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: ["11","12","13","14","15","16","17","18"],
+      datasets: [{
+        label: "Projected Value",
+        data: [950000,980000,1010000,1040000,1080000,1120000,1160000,1200000],
+        backgroundColor: "#2f83c3"
+      }]
+    },
+    options: {
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  // Function to calculate future value
+  function calculateFutureValue(P, r, n) {
+    return P * Math.pow(1 + r/100, n);
+  }
+
+  function calculateLumpsum(F, r, n) {
+    return F / Math.pow(1 + r/100, n);
+  }
+
+  function calculateSIP(F, r, n) {
+    const monthlyRate = r/12/100;
+    const months = n*12;
+    return F * monthlyRate / (Math.pow(1 + monthlyRate, months) - 1);
+  }
+
+  function updateCalculator() {
+    const currentAge = parseFloat(currentAgeNum.value);
+    const marriageAge = parseFloat(marriageAgeNum.value);
+    const years = marriageAge - currentAge;
+    const currentExp = parseFloat(currentExpenseNum.value);
+    const r = parseFloat(rateReturnNum.value);
+    const i = parseFloat(inflationNum.value);
+
+    const futureExp = Math.round(currentExp * Math.pow(1 + i/100, years));
+    const lumpsum = Math.round(calculateLumpsum(futureExp, r, years));
+    const sip = Math.round(calculateSIP(futureExp, r, years));
+
+    // Update displays
+    currentExpDisplay.textContent = "₹" + currentExp.toLocaleString();
+    futureExpDisplay.textContent = "₹" + futureExp.toLocaleString();
+    lumpsumDisplay.textContent = "₹" + lumpsum.toLocaleString();
+    sipDisplay.textContent = "₹" + sip.toLocaleString();
+
+    // Update pie chart
+    pieChart.data.datasets[0].data = [currentExp, futureExp];
+    pieChart.update();
+
+    // Update bar chart (example linear growth)
+    let barData = [];
+    for (let y = 1; y <= years; y++) {
+      barData.push(Math.round(currentExp + (futureExp - currentExp) * (y / years)));
+    }
+    barChart.data.labels = Array.from({length: years}, (_, i) => (i + currentAge + 1).toString());
+    barChart.data.datasets[0].data = barData;
+    barChart.update();
+  }
+
+  updateCalculator();
+
+  // PDF Download
+  document.getElementById("downloadPDF").addEventListener("click", () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.text("💍 Marriage Planning Calculator", 10, 10);
+    doc.text(`Current Age: ${currentAgeNum.value}`, 10, 20);
+    doc.text(`Age at Marriage: ${marriageAgeNum.value}`, 10, 30);
+    doc.text(`Current Expenses: ₹${parseFloat(currentExpenseNum.value).toLocaleString()}`, 10, 40);
+    doc.text(`Future Expenses: ${futureExpDisplay.textContent}`, 10, 50);
+    doc.text(`Planning via Lumpsum: ${lumpsumDisplay.textContent}`, 10, 60);
+    doc.text(`Planning via SIP: ${sipDisplay.textContent}`, 10, 70);
+
+    doc.save("marriage_plan.pdf");
+  });
+
+</script>
+
+</body>
+</html>

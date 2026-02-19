@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SIP Calculator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .calc-wrapper { display: flex; gap: 20px; }
+    .calc-card-left, .calc-card-right { padding: 20px; border: 1px solid #ccc; border-radius: 10px; width: 50%; }
+    .calc-group { margin-bottom: 15px; }
+    .calc-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+    .calc-group input[type="range"] { width: 100%; }
+    .calc-group input[type="number"] { width: 120px; margin-top: 5px; }
+    .calc-result div { margin: 5px 0; display: flex; justify-content: space-between; font-weight: bold; }
+    button { padding: 10px 15px; background-color: #2f83c3; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background-color: #1e6fa3; }
+  </style>
+</head>
+<body>
+
+<h2>📈 SIP Calculator</h2>
+
+<div class="calc-wrapper">
+
+  <!-- LEFT CARD -->
+  <div class="calc-card-left">
+
+    <div class="calc-group">
+      <label>Monthly Investment (₹)</label>
+      <input id="sipRange" type="range" min="500" max="100000" value="5000">
+      <input id="sipNum" type="number" value="5000">
+    </div>
+
+    <div class="calc-group">
+      <label>Expected Return Rate (p.a %)</label>
+      <input id="rateRange" type="range" min="1" max="30" value="12">
+      <input id="rateNum" type="number" value="12">
+    </div>
+
+    <div class="calc-group">
+      <label>Time Period (Years)</label>
+      <input id="timeRange" type="range" min="1" max="40" value="10">
+      <input id="timeNum" type="number" value="10">
+    </div>
+
+    <div class="calc-result">
+      <div><span>Invested Amount</span><span id="invested">₹0</span></div>
+      <div><span>Est. Returns</span><span id="returns">₹0</span></div>
+      <div><span>Total Value</span><span id="total">₹0</span></div>
+    </div>
+
+    <button onclick="downloadPDF()">Download PDF</button>
+
+  </div>
+
+  <!-- RIGHT CARD -->
+  <div class="calc-card-right">
+    <canvas id="pieChart"></canvas>
+  </div>
+
+</div>
+
+<script>
+  const sipR = document.getElementById("sipRange"),
+        sipN = document.getElementById("sipNum"),
+        rateR = document.getElementById("rateRange"),
+        rateN = document.getElementById("rateNum"),
+        timeR = document.getElementById("timeRange"),
+        timeN = document.getElementById("timeNum");
+
+  function sync(r, n) {
+    r.addEventListener("input", () => { n.value = r.value; update(); });
+    n.addEventListener("input", () => { r.value = n.value; update(); });
+  }
+
+  sync(sipR, sipN);
+  sync(rateR, rateN);
+  sync(timeR, timeN);
+
+  const pieChart = new Chart(document.getElementById("pieChart"), {
+    type: 'pie',
+    data: {
+      labels: ["Invested", "Returns"],
+      datasets: [{
+        data: [0, 0],
+        backgroundColor: ["#2f83c3", "#1e2a6a"]
+      }]
+    }
+  });
+
+  function update() {
+    const P = parseFloat(sipN.value);
+    const i = (parseFloat(rateN.value) / 100) / 12;
+    const n = parseFloat(timeN.value) * 12;
+
+    // ✅ Correct SIP Formula
+    const totalValue = P * ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
+    const invested = P * n;
+    const returns = totalValue - invested;
+
+    document.getElementById("invested").innerText =
+      "Rs." + Math.round(invested).toLocaleString();
+
+    document.getElementById("returns").innerText =
+      "Rs." + Math.round(returns).toLocaleString();
+
+    document.getElementById("total").innerText =
+      "Rs." + Math.round(totalValue).toLocaleString();
+
+    pieChart.data.datasets[0].data = [invested, returns];
+    pieChart.update();
+  }
+
+  update();
+
+  // ✅ PDF Download (Connected to FastAPI Backend)
+  async function downloadPDF() {
+
+    const data = {
+      "Calculator": "SIP Calculator",
+      "Monthly Investment": sipN.value + " Rs.",
+      "Return Rate": rateN.value + " Percentage",
+      "Time Period": timeN.value + " Years",
+      "Invested Amount": document.getElementById("invested").innerText,
+      "Estimated Returns": document.getElementById("returns").innerText,
+      "Total Value": document.getElementById("total").innerText
+    };
+
+    const response = await fetch("http://127.0.0.1:8000/generate-pdf", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+});
+
+
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "SIP_Report.pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+</script>
+
+</body>
+</html>
