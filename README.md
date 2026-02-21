@@ -51,3 +51,27 @@ npm install
 npm run dev
 ```
 Open your browser at ``` http://localhost:5173 ``` and you're live.
+
+### Glimpse of Frontend
+<img width="1920" height="930" alt="image" src="https://github.com/user-attachments/assets/1ddf8070-e4cb-47f5-9c84-bbb3b3bae339" />
+<img width="1920" height="917" alt="image" src="https://github.com/user-attachments/assets/94d928c6-e57e-4ef1-a426-f71adfcdfb9e" />
+<img width="1920" height="925" alt="image" src="https://github.com/user-attachments/assets/34a450a5-a434-4b93-97f3-433ee82a9c50" />
+<img width="1920" height="912" alt="image" src="https://github.com/user-attachments/assets/d56ecd50-f605-4771-8187-51d61b6c4a79" />
+<img width="1920" height="918" alt="image" src="https://github.com/user-attachments/assets/7c38bf7d-ea89-4902-84fa-1d5ab149725e" />
+<img width="1920" height="904" alt="image" src="https://github.com/user-attachments/assets/44c356f0-d509-4ff3-a1d0-cedd2811bdaa" />
+<img width="1920" height="920" alt="image" src="https://github.com/user-attachments/assets/a850a48f-9259-4550-a67e-3de0f85ffe8f" />
+
+#### Demo Login details are as follows:
+- ID : ```   demo@bank.com  ```
+- Password : ``` demo123  ```
+
+<img width="1920" height="910" alt="image" src="https://github.com/user-attachments/assets/bbf4144a-2e35-4119-ab12-3813991d08ee" />
+
+
+# Made and Contributed by Vansh Garg 
+
+
+
+
+
+
