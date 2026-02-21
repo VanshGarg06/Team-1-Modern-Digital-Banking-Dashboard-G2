@@ -13,3 +13,41 @@ A user should be able to:
 - Receive alerts
 - See financial insights
 This is not a toy project. It mirrors real-world systems used in fintech products.
+## FastAPI Endpoints
+- GET /
+- GET /accounts/ 
+- POST /accounts/
+- GET /accounts/{accountid}
+- PUT /accounts/{accountid}
+- DELETE /accounts/{accountid}
+- GET /categories/
+- POST /transactions/auto-categorize
+- PUT /transactions/{transaction_id}/category
+- POST /budgets/
+- GET /budgets/progress
+- POST /bills
+- GET /bills
+- PUT /bills/{bill_id}
+- DELETE /bills/{bill_id}
+- GET /bills/status
+- POST /rewards
+- GET /rewards/summary
+- GET /rewards/currency-summary
+- GET /insights/cashflow
+- GET /insights/top-merchants
+- GET /insights/burn-rate/
+- GET /alerts
+- POST /alerts/check-low-balance
+- POST /alerts/check-budgets
+
+## ER Diagram of Database 
+<img width="1950" height="1648" alt="ER diagram Infosys" src="https://github.com/user-attachments/assets/83d3d3f7-e3b6-4049-afb6-79965ba79c98" />
+
+## Frontend 
+This resides in VanshDatabaseAPI branch made by @VanshGarg06 under banking-app which we can start by changing the directory by:
+```
+cd banking-app
+npm install
+npm run dev
+```
+Open your browser at ``` http://localhost:5173 ``` and you're live.
