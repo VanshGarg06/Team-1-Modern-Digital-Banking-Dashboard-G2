@@ -40,6 +40,14 @@ This is not a toy project. It mirrors real-world systems used in fintech product
 - POST /alerts/check-low-balance
 - POST /alerts/check-budgets
 
+  <img width="1917" height="871" alt="image" src="https://github.com/user-attachments/assets/8386ef56-a0ef-4e30-8d85-f41d9e91c0c8" />
+  <img width="1920" height="831" alt="image" src="https://github.com/user-attachments/assets/7d79088c-e9eb-4c01-800c-b20737d5d366" />
+  <img width="1920" height="862" alt="image" src="https://github.com/user-attachments/assets/fc2d2679-4bf0-4fa9-b917-522f836c0664" />
+  <img width="1920" height="870" alt="image" src="https://github.com/user-attachments/assets/90a96c90-66bc-4ca9-8767-16f9db11a160" />
+
+
+
+
 ## ER Diagram of Database 
 <img width="1950" height="1648" alt="ER diagram Infosys" src="https://github.com/user-attachments/assets/83d3d3f7-e3b6-4049-afb6-79965ba79c98" />
 
