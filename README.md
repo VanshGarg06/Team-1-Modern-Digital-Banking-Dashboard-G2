@@ -46,10 +46,10 @@ This is not a toy project. It mirrors real-world systems used in fintech product
 ## Frontend 
 This resides in VanshDatabaseAPI branch made by @VanshGarg06 under banking-app which we can start by changing the directory by:
 ```
-cd banking-app
-npm install
-npm run dev
-```
+cd banking-app ```
+``` npm install  ```
+``` npm run dev  ```
+
 Open your browser at ``` http://localhost:5173 ``` and you're live.
 
 ### Glimpse of Frontend
